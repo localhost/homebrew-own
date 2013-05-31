@@ -2,7 +2,7 @@ require 'formula'
 
 class Ldc < Formula
   homepage 'http://wiki.dlang.org/LDC'
-  url: 'https://github.com/downloads/ldc-developers/ldc/ldc-0.10.0-src.tar.gz'
+  url 'https://github.com/downloads/ldc-developers/ldc/ldc-0.10.0-src.tar.gz'
   sha1 '6cfd64f89d74655dc2896d428ac26331c963f00a'
   head 'https://github.com/ldc-developers/ldc.git'
 
