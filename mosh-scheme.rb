@@ -12,7 +12,7 @@ class MoshScheme < Formula
   depends_on 'oniguruma'
 
   def install
-    system "./autogen.sh" if build.head?
+    system "./gen-git-build.sh" if build.head?
 
     system "./configure", "--prefix=#{prefix}"
     system "make"
