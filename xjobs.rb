@@ -6,8 +6,7 @@ class Xjobs < Formula
   sha1 'c461a023cae35d082416914f3d4f13373007f1d2'
 
   def install
-    system "./configure", "--disable-debug", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}"
-    system "make", "install" # if this fails, try separate make/make install steps
+    system "./configure", "--prefix=#{prefix}"
+    system "make", "install"
   end
 end
