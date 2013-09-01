@@ -6,14 +6,13 @@ class Iulib < Formula
   sha1 '96a006f806a650886fdd59b1239f6e56d1a864c1'
 
   depends_on "scons" => :build
+  depends_on "imagemagick" => :build
   depends_on :libtool
   depends_on :libpng
   depends_on "jpeg"
   depends_on "libtiff" => 'with-lzlib'
-  depends_on "imagemagick" => 'with-magick-plus-plus'
 
   def patches
-    # fixes errors in header calls
     DATA
   end
 
