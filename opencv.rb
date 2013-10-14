@@ -5,10 +5,13 @@ class Opencv < Formula
   url 'https://github.com/Itseez/opencv/archive/2.4.6.2.tar.gz'
   sha1 'e599c984eabd16730df7f4ecfd7cd3778784e685'
 
+  env :std # otherwise superenv removes our build flags
+
   option '32-bit'
   option 'with-qt',  'Build the Qt4 backend to HighGUI'
   option 'with-tbb', 'Enable parallel code in OpenCV using Intel TBB'
   option 'with-opencl', 'Enable gpu code in OpenCV using OpenCL'
+  option 'with-c++11', 'Compile using Clang, std=c++11 and stdlib=libc++' if MacOS.version >= :lion
 
   depends_on 'cmake'   => :build
   depends_on 'pkg-config' => :build
@@ -22,20 +25,18 @@ class Opencv < Formula
   depends_on 'qt'      => :optional
   depends_on :libpng
 
-  # Can also depend on ffmpeg, but this pulls in a lot of extra stuff that
-  # you don't need unless you're doing video analysis, and some of it isn't
-  # in Homebrew anyway. Will depend on openexr if it's installed.
-  depends_on 'ffmpeg'  => [:build, :optional]
-
   def install
     args = std_cmake_args + %w[
       -DCMAKE_OSX_DEPLOYMENT_TARGET=
       -DWITH_CUDA=OFF
+      -DWITH_OPENEXR=OFF
+      -DBUILD_OPENEXR=OFF
       -DBUILD_ZLIB=OFF
       -DBUILD_TIFF=OFF
       -DBUILD_PNG=OFF
       -DBUILD_JPEG=OFF
       -DBUILD_JASPER=OFF
+      -DWITH_FFMPEG=OFF
       -DBUILD_TESTS=OFF
       -DBUILD_PERF_TESTS=OFF
     ]
@@ -55,9 +56,15 @@ class Opencv < Formula
     else
       args << "-DWITH_PYTHON=OFF"
     end
-    args << '-DWITH_FFMPEG=OFF' unless build.with? 'ffmpeg'
+
+    if build.with? 'c++11' and MacOS.version >= :lion
+      args << "-DCMAKE_C_COMPILER=cc"
+      args << "-DCMAKE_CXX_COMPILER=c++"
+      args << "-DCMAKE_CXX_FLAGS='-std=c++11 -stdlib=libc++ -Wno-c++11-narrowing'"
+    end
 
     args << '..'
+
     mkdir 'macbuild' do
       system 'cmake', *args
       system "make"
@@ -68,4 +75,34 @@ class Opencv < Formula
   def caveats
     python.standard_caveats if python
   end
+
+  def patches
+    # fix the error in 'dpstereo.cpp': multiple unsequenced modifications to 'temp3' [-Werror,-Wunsequenced]
+    DATA
+  end
+
 end
+
+__END__
+diff --git a/modules/legacy/src/dpstereo.cpp b/modules/legacy/src/dpstereo.cpp
+index a55e1ca..dd7e642 100644
+--- a/modules/legacy/src/dpstereo.cpp
++++ b/modules/legacy/src/dpstereo.cpp
+@@ -76,7 +76,7 @@ typedef struct _CvRightImData
+     uchar min_val, max_val;
+ } _CvRightImData;
+ 
+-#define CV_IMAX3(a,b,c) ((temp3 = (a) >= (b) ? (a) : (b)),(temp3 >= (c) ? temp3 : (c)))
++#define CV_IMAX3(a,b,c) ((temp2 = (a) >= (b) ? (a) : (b)),(temp2 >= (c) ? temp2 : (c)))
+ #define CV_IMIN3(a,b,c) ((temp3 = (a) <= (b) ? (a) : (b)),(temp3 <= (c) ? temp3 : (c)))
+ 
+ static void icvFindStereoCorrespondenceByBirchfieldDP( uchar* src1, uchar* src2,
+@@ -87,7 +87,7 @@ static void icvFindStereoCorrespondenceByBirchfieldDP( uchar* src1, uchar* src2,
+                                                 float  _param3, float _param4,
+                                                 float  _param5 )
+ {
+-    int     x, y, i, j, temp3;
++    int     x, y, i, j, temp2, temp3;
+     int     d, s;
+     int     dispH =  maxDisparity + 3;
+     uchar  *dispdata;
