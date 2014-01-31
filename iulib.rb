@@ -12,6 +12,10 @@ class Iulib < Formula
   depends_on "jpeg"
   depends_on "libtiff" => 'with-lzlib'
 
+  depends_on "sdl" => :optional
+  depends_on "sdl_gfx" => :optional
+  depends_on "sdl_image" => :optional
+
   def patches
     DATA
   end
@@ -36,6 +40,46 @@ index e5e3b70..90a37a0 100644
     missing += " libtiff4-dev"
  
  if missing:
+diff --git a/SConstruct b/SConstruct
+index 90a37a0..a3cf5e5 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -76,9 +76,6 @@ have_v4l2 = conf.CheckHeader("linux/videodev2.h")
+ have_sdl = conf.CheckCXXHeader("SDL/SDL_gfxPrimitives.h") and \
+            conf.CheckCXXHeader("SDL/SDL.h")
+
+-have_vidio = 0 # FIXME
+-have_v4l2 = 0 # FIXME
+-have_sdl = 1
+ conf.Finish()
+
+ ### install folders
+diff --git a/imglib/imgops.h b/imglib/imgops.h
+index 2fdb156..86f1567 100644
+--- a/imglib/imgops.h
++++ b/imglib/imgops.h
+@@ -67,7 +67,7 @@ namespace iulib {
+     }
+
+     template<class T, class V>
+-    void addscaled(colib::narray<T> &, colib::narray<T> &, V, int, int);
++    void addscaled(colib::narray<T> &, colib::narray<T> &, V scale=1, int dx=0, int dy=0);
+     template<class T>
+     void tighten(colib::narray<T> &image);
+     template<class T>
+diff --git a/imglib/imgops.cc b/imglib/imgops.cc
+index b950c91..c9dcb14 100644
+--- a/imglib/imgops.cc
++++ b/imglib/imgops.cc
+@@ -133,7 +133,7 @@ namespace iulib {
+
+     template<class T,class V>
+     void addscaled(narray<T> &dest,narray<T> &src,
+-            V scale=1,int dx=0,int dy=0) {
++            V scale,int dx,int dy) {
+         for (int i=0; i<dest.dim(0); i++)
+             for (int j=0; j<dest.dim(1); j++)
+                 dest.unsafe_at(i,j) += (T)(scale*xref(src,i+dx,j+dy));
 diff --git a/colib/narray-util.h b/colib/narray-util.h
 index bf86993..6d6c458 100644
 --- a/colib/narray-util.h
