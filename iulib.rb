@@ -4,6 +4,7 @@ class Iulib < Formula
   homepage 'http://code.google.com/p/iulib/'
   url 'http://iulib.googlecode.com/files/iulib-0.4.tgz'
   sha1 '96a006f806a650886fdd59b1239f6e56d1a864c1'
+  head 'https://github.com/localhost/iulib.git'
 
   depends_on "scons" => :build
   depends_on "imagemagick" => :build
