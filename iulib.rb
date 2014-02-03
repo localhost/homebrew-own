@@ -18,7 +18,7 @@ class Iulib < Formula
   depends_on "sdl_image" => :optional
 
   def patches
-    DATA
+    DATA unless build.head?
   end
 
   def install
