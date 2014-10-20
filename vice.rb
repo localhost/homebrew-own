@@ -2,8 +2,9 @@ require 'formula'
 
 class Vice < Formula
   homepage 'http://vice-emu.sourceforge.net/'
-  url 'http://svn.code.sf.net/p/vice-emu/code/tags/v2.4/v2.4.6/vice'
-  version '2.4.6'
+  url 'http://downloads.sourceforge.net/project/vice-emu/development-releases/vice-2.4.7.tar.gz'
+  sha1 '4848efd2114984ce2298201498b79b2d6ed7d5a4'
+  version '2.4.7'
 
   head 'http://svn.code.sf.net/p/vice-emu/code/trunk/vice'
 
@@ -20,7 +21,6 @@ class Vice < Formula
     # Use Cocoa instead of X
     # Use a static lame, otherwise Vice is hard-coded to look in
     # /opt for the library.
-    system "./autogen.sh"
     system "./configure", "--disable-debug", "--disable-dependency-tracking",
                           "--prefix=#{prefix}",
                           "--with-cocoa",
