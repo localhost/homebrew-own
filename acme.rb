@@ -5,6 +5,7 @@ class Acme < Formula
   url 'http://www.esw-heim.tu-clausthal.de/~marco/smorbrod/acme/current/acme091src.tar.bz2'
   version '0.91'
   sha1 'd9751da2aee7cfc7ddbbbc0923b13f669b8666ad'
+  head 'http://svn.code.sf.net/p/acme-crossass/code-0/trunk', :using => :svn
 
   def install
     cd 'src' do
