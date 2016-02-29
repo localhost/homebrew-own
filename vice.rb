@@ -2,9 +2,13 @@ require 'formula'
 
 class Vice < Formula
   homepage 'http://vice-emu.sourceforge.net/'
-  url 'http://downloads.sourceforge.net/project/vice-emu/development-releases/vice-2.4.7.tar.gz'
-  sha1 '4848efd2114984ce2298201498b79b2d6ed7d5a4'
-  version '2.4.7'
+
+  #url 'http://downloads.sourceforge.net/project/vice-emu/development-releases/vice-2.4.25.tar.gz'
+  #sha1 '1056da65c8598a268e23c715c1cae7457e06716b'
+ 
+  # we checkout the svn repo because the release archive seems to be missing some files
+  url 'svn://svn.code.sf.net/p/vice-emu/code/tags/v2.4/v2.4.25/vice'
+  version '2.4.25'
 
   head 'http://svn.code.sf.net/p/vice-emu/code/trunk/vice'
 
@@ -21,14 +25,16 @@ class Vice < Formula
     # Use Cocoa instead of X
     # Use a static lame, otherwise Vice is hard-coded to look in
     # /opt for the library.
+    system "./autogen.sh"
     system "./configure", "--disable-debug", "--disable-dependency-tracking",
                           "--prefix=#{prefix}",
                           "--with-cocoa",
                           "--without-x",
-                          "--enable-static-lame",
+			  "--disable-nls",
+                          "--enable-static-lame"#,
                           # VICE can't compile against FFMPEG newer than 0.11:
                           # http://sourceforge.net/tracker/?func=detail&aid=3585471&group_id=223021&atid=1057617
-                          "--disable-ffmpeg"
+#                          "--disable-ffmpeg"
     system "make"
     system "make bindist"
     prefix.install Dir['vice-macosx-*/*']
