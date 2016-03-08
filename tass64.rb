@@ -2,8 +2,8 @@ require "formula"
 
 class Tass64 < Formula
   homepage 'http://singularcrew.hu/64tass/'
-  url 'http://downloads.sourceforge.net/project/tass64/source/64tass-1.51.584-src.zip'
-  sha1 '4cc9739592c7fc7b9901f73f78d47da8664308d6'
+  url 'http://downloads.sourceforge.net/project/tass64/source/64tass-1.51.992-src.zip'
+  sha1 '3d7e653dabca96951395a4f38e4988ae9b2751f5'
   head 'svn://svn.code.sf.net/p/tass64/code/trunk'
 
   def install
